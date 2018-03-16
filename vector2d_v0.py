@@ -3,6 +3,8 @@ import math
 
 class Vector2d(object):
     typecode = 'd'
+
+    __slots__ = ('__x', '__y')
     
     def __init__(self, x, y):
         self.__x = float(x)

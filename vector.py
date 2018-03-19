@@ -4,6 +4,8 @@ import math
 import numbers
 import functools
 import operator
+import itertools
+import numbers
 
 
 class Vector(object):
@@ -36,11 +38,39 @@ class Vector(object):
         #     return True
         # else:
         #     return False
-        return (len(self) != len(other) and
-                all(a == b for a, b in zip(self, other)))
+        if isinstance(other, Vector):
+            return (len(self) == len(other) and
+                    all(a == b for a, b in zip(self, other)))
+        else:
+            return NotImplemented
 
     def __abs__(self):
         return math.sqrt(sum(x**2 for x in self))
+
+    def __neg__(self):
+        return Vector(-x for x in self)
+
+    def __pos__(self):
+        return Vector(self)
+
+    def __add__(self, other):
+        try:
+            pairs = itertools.zip_longest(self, other, fillvalue=0.0)
+            return Vector(a + b for a, b in pairs)
+        except TypeError:
+            return NotImplemented
+
+    def __radd__(self, other):
+        return self + other
+
+    def __mul__(self, scalar):
+        if isinstance(scalar, numbers.Real):
+            return Vector(x * scalar for x in self)
+        else:
+            return NotImplemented
+
+    def __rmul__(self, scalar):
+        return self * scalar
 
     def __bool__(self):
         return bool(abs(self))
